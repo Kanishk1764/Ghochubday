@@ -18,7 +18,7 @@
   // ==========================================================================
   const SoundEngine = {
     ctx: null,
-    musicEnabled: false,
+    musicEnabled: true,
     musicTimer: null,
     melodyStep: 0,
 
@@ -30,8 +30,28 @@
         }
       }
       if (this.ctx && this.ctx.state === "suspended") {
-        this.ctx.resume();
+        this.ctx.resume().catch(() => {});
       }
+    },
+
+    enableDefaultMusic() {
+      this.musicEnabled = true;
+      const btn = document.getElementById("btn-music-toggle");
+      if (btn) btn.textContent = "🔊 Music: ON";
+      this.initContext();
+      this.startChiptuneLoop();
+
+      // Ensure mobile/desktop browsers that block audio before first tap immediately resume on first touch/click
+      const unlockAudio = () => {
+        if (!this.musicEnabled) return;
+        this.initContext();
+        if (!this.musicTimer) {
+          this.startChiptuneLoop();
+        }
+      };
+      ["pointerdown", "touchstart", "click", "keydown"].forEach((evt) => {
+        window.addEventListener(evt, unlockAudio, { once: true, passive: true });
+      });
     },
 
     playHtmlAudio(id) {
@@ -395,6 +415,7 @@
       this.updateMapUI();
       this.renderFinalBouncyWall();
       this.bindKeyboardShortcuts();
+      SoundEngine.enableDefaultMusic();
 
       // Update dynamic count badge
       const totalCountEl = document.getElementById("total-photos-count");
