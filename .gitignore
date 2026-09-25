@@ -1,0 +1,5 @@
+# Ignore raw backup archives and originals so deployment is fast and lightweight
+ananya-images/_originals/
+*.zip
+.DS_Store
+Thumbs.db

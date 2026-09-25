@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Bhondhu & Ghochuman's Pixel Love Quest 🎂💖</title>
+  <!-- Retro Pixel Fonts from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Floating Ambient Stars & Hearts Background -->
+  <div id="ambient-bg" aria-hidden="true"></div>
+
+  <!-- Full-Screen Confetti Overlay Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- =====================================================================
+       PERSISTENT TOP HUD (Secrets Counter, Memory Reel, Photo Editor, Music)
+       ===================================================================== -->
+  <header id="top-hud">
+    <div class="hud-brand" onclick="Game.showScreen('screen-title')" title="Return to Title Screen">
+      <span>🎮</span>
+      <span>BHONDHU &amp; GHOCHUMAN</span>
+    </div>
+    <div class="hud-controls">
+      <button class="hud-pill gold" id="hud-secrets-btn" onclick="Game.openSecretsGallery()">
+        🏆 Secret Messages found: <span id="secret-count-text">0/5</span>
+      </button>
+      <button class="hud-pill" onclick="Game.openMemoryShowreel(0, 'screen-map')">
+        📸 Bouncy Photos (<span id="total-photos-count">22</span>)
+      </button>
+      <button class="hud-pill" id="btn-music-toggle" onclick="Game.toggleMusic()">
+        🔊 Music: OFF
+      </button>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       MAIN GAME CONTAINER
+       ===================================================================== -->
+  <main id="game-wrapper">
+
+    <!-- ===================================================================
+         SCREEN 1: TITLE SCREEN (Section A10 Title Art + A1/A2 Sprites + 19.jpg/5.jpg)
+         =================================================================== -->
+    <section id="screen-title" class="game-screen active">
+      <!-- Hidden Secret Achievement Badge #1 (Title Screen: Miss Motichoor Ki Laddu) -->
+      <button class="secret-badge-btn" id="badge-btn-1" style="top: 16px; right: 18px;" onclick="Game.unlockSecret(1)" title="Tap secret badge!">
+        🍬
+      </button>
+
+      <!-- Section A10: Title Screen Starry Night Background -->
+      <div class="title-hero" style="background-image: linear-gradient(rgba(18,8,34,0.62), rgba(28,12,48,0.84)), url('sprites/title_bg.png');">
+        <div class="birthday-ribbon">
+          🎂 HAPPY BIRTHDAY GHOCHUMAN • <span id="title-date-text">27 SEPTEMBER</span> 🎂
+        </div>
+
+        <h1 class="game-title">
+          BHONDHU &amp; GHOCHUMAN'S<br/>8-BIT PIXEL LOVE QUEST
+        </h1>
+        <p class="game-subtitle">
+          ✨ From sharing a can of Pringles to forever together ✨
+        </p>
+
+        <div class="title-characters-stage">
+          <!-- Player 1: Bhondhu (Section A1 Sprite + Photo 19.jpg) -->
+          <div class="hero-card">
+            <div class="hero-sprite-wrap">
+              <!-- Section A1: Base sprite — Bhondhu -->
+              <img src="sprites/bhondhu.png" alt="Bhondhu Pixel Sprite" class="sprite-img" />
+              <!-- Real Photo 19.jpg (Bhondhu) -->
+              <img src="ananya-images/19.jpg" alt="Bhondhu Photo 19" class="hero-mini-photo real-photo" />
+            </div>
+            <div class="hero-name-tag">BHONDHU</div>
+            <div class="hero-role-tag">Photo #19 • Pringles Supplier</div>
+          </div>
+
+          <div class="heart-bridge">
+            <div class="big-heart">💖</div>
+            <!-- Section A5: The Ring & Pringles Icons -->
+            <img src="sprites/pringles.png" alt="Pixel Pringles" class="sprite-img" style="height: 52px;" />
+            <span style="font-size: 9px; color: var(--pastel-gold);">27 SEPT</span>
+          </div>
+
+          <!-- Player 2: Ghochuman (Section A2 Sprite + Photo 5.jpg) -->
+          <div class="hero-card">
+            <div class="hero-sprite-wrap">
+              <!-- Section A2: Base sprite — Ghochuman -->
+              <img src="sprites/ghochuman.png" alt="Ghochuman Pixel Sprite" class="sprite-img" />
+              <!-- Real Photo 5.jpg (Ghochuman) -->
+              <img src="ananya-images/5.jpg" alt="Ghochuman Photo 5" class="hero-mini-photo real-photo" />
+            </div>
+            <div class="hero-name-tag">GHOCHUMAN</div>
+            <div class="hero-role-tag">Photo #5 • Birthday Queen 👑</div>
+          </div>
+        </div>
+
+        <div class="title-actions">
+          <button class="pixel-btn gold-btn" onclick="Game.startQuestFromTitle()">
+            ▶ PRESS START
+          </button>
+          <button class="pixel-btn secondary" onclick="Game.openMemoryShowreel(0, 'screen-title')">
+            📸 WATCH ALL 22 BOUNCY PHOTOS
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SCREEN 2: LEVEL MAP SCREEN (Section A8 Overworld Map Background)
+         =================================================================== -->
+    <section id="screen-map" class="game-screen">
+      <!-- Hidden Secret Achievement Badge #2 (Map Screen: Galleria Number 2 Rush!) -->
+      <button class="secret-badge-btn" id="badge-btn-2" style="top: 14px; left: 16px;" onclick="Game.unlockSecret(2)" title="Tap secret badge!">
+        🚨
+      </button>
+
+      <div class="section-header">
+        <h2>🗺️ BIRTHDAY LOVE QUEST WORLD MAP</h2>
+        <p>Complete each level in order — with bouncy photo memories in between!</p>
+      </div>
+
+      <!-- Section A8: Level Map / Overworld Background -->
+      <div class="map-board" style="background-image: linear-gradient(rgba(22,10,40,0.55), rgba(22,10,40,0.75)), url('sprites/map_bg.png');">
+        <div class="map-nodes-row">
+
+          <!-- NODE 1: LEVEL 1 -->
+          <div class="level-node unlocked" id="map-node-1">
+            <div class="node-badge">🥔</div>
+            <div class="node-step">LEVEL 1</div>
+            <div class="node-title">HOW WE MET</div>
+            <p class="node-desc">The legendary Pringles craving that started it all!</p>
+            <button class="pixel-btn small-btn" onclick="Game.enterLevel(1)">
+              PLAY LEVEL 1 ▶
+            </button>
+          </div>
+
+          <!-- NODE 2: LEVEL 2 -->
+          <div class="level-node locked" id="map-node-2">
+            <div class="node-badge" id="node-icon-2">🔒</div>
+            <div class="node-step">LEVEL 2</div>
+            <div class="node-title">CATCH THE RING</div>
+            <p class="node-desc">Run, jump over thorns, grab Pringles &amp; catch the ring!</p>
+            <button class="pixel-btn small-btn" id="node-btn-2" onclick="Game.enterLevel(2)">
+              LOCKED 🔒
+            </button>
+          </div>
+
+          <!-- NODE 3: LEVEL 3 -->
+          <div class="level-node locked" id="map-node-3">
+            <div class="node-badge" id="node-icon-3">🔒</div>
+            <div class="node-step">LEVEL 3</div>
+            <div class="node-title">THE PROPOSAL</div>
+            <p class="node-desc">Final Boss Battle: Will Ghochuman say Yes or No?!</p>
+            <button class="pixel-btn small-btn" id="node-btn-3" onclick="Game.enterLevel(3)">
+              LOCKED 🔒
+            </button>
+          </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 22px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+          <button class="pixel-btn secondary small-btn" onclick="Game.openMemoryShowreel(0, 'screen-map')">
+            📸 Bouncy Photo Theater (All 22 Photos)
+          </button>
+          <button class="pixel-btn mint-btn small-btn" id="map-celebration-btn" style="display: none;" onclick="Game.showScreen('screen-celebration')">
+            🎉 Go to Final Birthday Celebration →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SCREEN 3: BOUNCY PHOTO INTERLUDE & FULL 22-PHOTO MEMORY SHOWCASE
+         (Bounces photos & texts from Left->Right and Right->Left!)
+         =================================================================== -->
+    <section id="screen-photos" class="game-screen">
+      <div class="section-header">
+        <h2 id="photo-reel-heading">📸 BOUNCY MEMORY INTERLUDE</h2>
+        <p id="photo-reel-subheading">Watch our memories bounce in from Left → Right &amp; Right → Left!</p>
+      </div>
+
+      <div class="bouncy-stage-box">
+        <!-- Animated Between-Photos Banner -->
+        <div id="between-photo-banner" class="between-anim-banner bounce-ltr">
+          ✨ Press Start on Our Story! ✨
+        </div>
+
+        <!-- Bouncy Polaroid Card -->
+        <div id="bouncy-photo-card" class="bouncy-polaroid anim-photo-ltr">
+          <div class="photo-sticker-float" id="bouncy-photo-sticker">💖</div>
+          <div class="bouncy-polaroid-img-wrap">
+            <span class="photo-number-pill" id="bouncy-photo-num">PHOTO #19 (1/22)</span>
+            <img id="bouncy-photo-img" src="ananya-images/19.jpg" alt="Memory Photo" class="real-photo" />
+          </div>
+          <div id="bouncy-text-wrap" class="bouncy-text-card anim-text-rtl">
+            <div class="bouncy-photo-title" id="bouncy-photo-title">Player 1: Little Bhondhu 🕺</div>
+            <div class="bouncy-photo-caption" id="bouncy-photo-caption">
+              Dressed in a tiny waistcoat, already waiting to share his Pringles with you!
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls for Bouncy Photo Reel -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin-top: 16px; width: 100%;">
+          <button class="pixel-btn small-btn secondary" onclick="Game.prevPhoto()">
+            ← PREV
+          </button>
+          <button class="pixel-btn small-btn" id="btn-autoplay-photos" onclick="Game.togglePhotoAutoplay()">
+            ⏸ AUTO-BOUNCE: ON
+          </button>
+          <button class="pixel-btn small-btn gold-btn" onclick="Game.nextPhoto()">
+            NEXT BOUNCE →
+          </button>
+          <button class="pixel-btn small-btn mint-btn" id="btn-finish-interlude" onclick="Game.finishPhotoInterlude()">
+            CONTINUE QUEST ▶
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SCREEN 4: LEVEL 1 — "HOW WE MET (THE PRINGLES STORY)"
+         =================================================================== -->
+    <section id="screen-level1" class="game-screen">
+      <!-- Hidden Secret Achievement Badge #3 (Level 1: Riding My Bike) -->
+      <button class="secret-badge-btn" id="badge-btn-3" style="top: 14px; right: 16px;" onclick="Game.unlockSecret(3)" title="Tap secret badge!">
+        🏍️
+      </button>
+
+      <div class="section-header">
+        <h2>🥔 LEVEL 1: HOW WE MET</h2>
+        <p>Tap the dialogue box or press Spacebar / Enter to advance our story!</p>
+      </div>
+
+      <div class="dialogue-stage">
+        <!-- Section A1: Bhondhu Sprite -->
+        <div class="stage-char" id="l1-char-bhondhu">
+          <img src="sprites/bhondhu.png" alt="Bhondhu Sprite" class="sprite-img" />
+          <span style="font-size: 9px; color: var(--pastel-gold); margin-top: 4px;">BHONDHU</span>
+        </div>
+
+        <!-- Interactive Pringles Can Centerpiece -->
+        <div class="pringles-centerpiece" onclick="Game.crunchPringle()" title="Tap to share a crispy Pringle!">
+          <img src="sprites/pringles.png" alt="Pringles Can" class="sprite-img" />
+          <span style="font-size: 8px; color: var(--pastel-cream); background: #d41c1c; padding: 3px 6px; border: 2px solid #000;">
+            TAP FOR PRINGLES! 🥔
+          </span>
+        </div>
+
+        <!-- Section A2: Ghochuman Sprite -->
+        <div class="stage-char" id="l1-char-ghochuman">
+          <img src="sprites/ghochuman.png" alt="Ghochuman Sprite" class="sprite-img" />
+          <span style="font-size: 9px; color: var(--pastel-pink); margin-top: 4px;">GHOCHUMAN</span>
+        </div>
+      </div>
+
+      <!-- Classic Retro RPG Dialogue Box -->
+      <div class="rpg-dialogue-box" id="l1-dialogue-box" onclick="Game.advanceDialogue()">
+        <div class="rpg-avatar-frame">
+          <img id="l1-speaker-avatar" src="ananya-images/19.jpg" alt="Speaker Portrait" />
+        </div>
+        <div>
+          <div class="rpg-Speaker" id="l1-speaker-name">BHONDHU (1/6)</div>
+          <div class="rpg-text" id="l1-dialogue-text"></div>
+        </div>
+        <div class="rpg-next-prompt" id="l1-next-indicator">▼ TAP / SPACE</div>
+      </div>
+
+      <div style="text-align: center; margin-top: 16px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <button class="pixel-btn small-btn secondary" onclick="Game.showScreen('screen-map')">
+          ← Map
+        </button>
+        <button class="pixel-btn mint-btn" id="btn-l1-complete" style="display: none;" onclick="Game.completeLevel1()">
+          Continue to Bouncy Memories &amp; Level 2 →
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SCREEN 5: LEVEL 2 — "CATCH THE RING" (SIDE-SCROLLING RUNNER)
+         =================================================================== -->
+    <section id="screen-level2" class="game-screen">
+      <!-- Hidden Secret Achievement Badge #4 (Level 2: Avengers Team Birthday) -->
+      <button class="secret-badge-btn" id="badge-btn-4" style="top: 14px; right: 16px;" onclick="Game.unlockSecret(4)" title="Tap secret badge!">
+        🦸‍♂️
+      </button>
+
+      <div class="section-header">
+        <h2>💍 LEVEL 2: CATCH THE RING</h2>
+        <p>Tap the screen or press SPACEBAR / UP ARROW to jump over thorns &amp; catch the ring!</p>
+      </div>
+
+      <div class="runner-hud">
+        <div>LIVES: <span id="runner-lives">❤️❤️❤️</span></div>
+        <div>SCORE: <span id="runner-score" style="color: var(--pastel-gold);">0</span></div>
+        <div>RING DISTANCE: <span id="runner-progress" style="color: var(--pastel-mint);">0%</span></div>
+      </div>
+
+      <div class="runner-canvas-wrap">
+        <!-- Side-scrolling runner canvas using Section A4/A1 Bhondhu sprite & Section A5 Ring icon -->
+        <canvas id="runner-canvas" width="800" height="340"></canvas>
+
+        <!-- Start / Retry / Win Overlay -->
+        <div class="runner-overlay" id="runner-overlay">
+          <img src="sprites/ring.png" alt="Sparkling Ring" class="sprite-img" style="height: 68px;" />
+          <h3 id="runner-overlay-title" style="font-size: 16px; color: var(--pastel-gold);">
+            READY TO CATCH THE RING?
+          </h3>
+          <p id="runner-overlay-desc" style="font-family: var(--font-retro); font-size: 22px; max-width: 460px;">
+            Help Bhondhu jump over spiky thorns, collect crispy Pringles &amp; floating hearts, and reach the sparkling ring at 100% distance!
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+            <button class="pixel-btn gold-btn" id="runner-action-btn" onclick="Game.startRunner()">
+              ▶ START RUNNER
+            </button>
+            <button class="pixel-btn mint-btn" id="runner-win-btn" style="display: none;" onclick="Game.completeLevel2()">
+              Continue to Bouncy Memories &amp; Level 3 →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <button class="pixel-btn small-btn secondary" onclick="Game.stopRunnerAndMap()">
+          ← Back to Map
+        </button>
+        <button class="pixel-btn small-btn" onclick="Game.runnerJump()">
+          ⬆️ TAP TO JUMP!
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SCREEN 6: LEVEL 3 — "THE PROPOSAL" (JRPG BOSS BATTLE + PRANK BUTTONS)
+         =================================================================== -->
+    <section id="screen-level3" class="game-screen">
+      <!-- Hidden Secret Achievement Badge #5 (Level 3: How You Kiss Me A Lot) -->
+      <button class="secret-badge-btn" id="badge-btn-5" style="top: 14px; right: 16px;" onclick="Game.unlockSecret(5)" title="Tap secret badge!">
+        💋
+      </button>
+
+      <div class="section-header">
+        <h2>⚔️ LEVEL 3: THE FINAL BOSS PROPOSAL</h2>
+        <p>A wild question appears! Choose your battle move wisely, Ghochuman...</p>
+      </div>
+
+      <!-- Section A7: Boss Battle Scene Background -->
+      <div class="boss-arena" id="boss-arena-box" style="background-image: linear-gradient(rgba(22,8,38,0.45), rgba(22,8,38,0.75)), url('sprites/boss_bg.png');">
+        <div class="boss-banner" id="boss-main-banner">
+          💍 WILL YOU MARRY ME, GHOCHUMAN? 💍
+        </div>
+
+        <div class="boss-combatants">
+          <!-- Left Side: Bhondhu -->
+          <div class="combatant-box">
+            <div style="font-size: 10px; color: var(--pastel-gold);">BHONDHU LV.99</div>
+            <div style="font-family: var(--font-retro); font-size: 17px; color: var(--pastel-rose);">Class: Certified Lover Boy</div>
+            <div class="hp-bar-outer"><div class="hp-bar-inner"></div></div>
+            <div style="position: relative; margin-top: 8px;">
+              <img src="sprites/bhondhu.png" alt="Bhondhu Boss Sprite" class="sprite-img" style="height: 125px;" />
+              <img src="ananya-images/19.jpg" alt="Bhondhu 19" class="hero-mini-photo real-photo" style="right: 10px; bottom: 0;" />
+            </div>
+          </div>
+
+          <div style="text-align: center;">
+            <img src="sprites/ring.png" alt="Ring" class="sprite-img" style="height: 64px; animation: gentleBounce 1.2s infinite;" />
+            <div id="boss-taunt-text" style="font-family: var(--font-retro); font-size: 21px; color: var(--pastel-gold); max-width: 190px; margin-top: 6px;">
+              "Try clicking NO... I dare you! 😏"
+            </div>
+          </div>
+
+          <!-- Right Side: Ghochuman -->
+          <div class="combatant-box">
+            <div style="font-size: 10px; color: var(--pastel-pink);">GHOCHUMAN LV.27</div>
+            <div style="font-family: var(--font-retro); font-size: 17px; color: var(--pastel-gold);">Birthday Boss • Motichoor Queen</div>
+            <div class="hp-bar-outer"><div class="hp-bar-inner"></div></div>
+            <div style="position: relative; margin-top: 8px;">
+              <img src="sprites/ghochuman.png" alt="Ghochuman Boss Sprite" class="sprite-img" style="height: 125px;" />
+              <img src="ananya-images/5.jpg" alt="Ghochuman 5" class="hero-mini-photo real-photo" style="right: 10px; bottom: 0;" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Battle Menu Options: YES and Dodging/Prank NO -->
+        <div class="boss-menu-zone" id="boss-menu-zone">
+          <div style="font-size: 10px; color: var(--pastel-cream);">
+            ▼ SELECT YOUR ANSWER:
+          </div>
+          <div class="boss-buttons-wrap" id="boss-buttons-wrap">
+            <button class="pixel-btn gold-btn" id="btn-yes-proposal" onclick="Game.triggerProposalWin('yes')">
+              YES 💍
+            </button>
+            <button class="pixel-btn secondary" id="btn-no-prank"
+              onmouseenter="Game.dodgeNoButton(event)"
+              ontouchstart="Game.dodgeNoButton(event)"
+              onclick="Game.clickNoPrank(event)">
+              No
+            </button>
+          </div>
+        </div>
+
+        <!-- GOTCHA VICTORY MODAL OVERLAY (Section A6 Proposal Scene) -->
+        <div class="gotcha-modal hidden" id="gotcha-modal">
+          <h2 id="gotcha-headline" style="font-size: clamp(16px, 3.5vw, 24px); color: var(--pastel-gold); line-height: 1.4;">
+            GOT YOUUU 😆 WE'RE GETTING MARRIED! 💍💖
+          </h2>
+          <p id="gotcha-subtext" style="font-family: var(--font-retro); font-size: 23px; color: var(--pastel-rose);">
+            Even "No" means "YES" in Bhondhu's game! Happy 27 September Birthday, my Ghochuman!
+          </p>
+          <!-- Section A6: Victory / Proposal Celebration Scene -->
+          <img src="sprites/proposal_scene.jpg" alt="Proposal Celebration Pixel Art" class="gotcha-scene-img" />
+          <button class="pixel-btn mint-btn" onclick="Game.goToFinalCelebration()">
+            🎂 ENTER GRAND BIRTHDAY &amp; PHOTO FINALE →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SCREEN 7: FINAL CELEBRATION SCREEN + ALL 22 BOUNCY PHOTOS PARADE
+         =================================================================== -->
+    <section id="screen-celebration" class="game-screen">
+      <div class="section-header">
+        <h2>🎉 HAPPY 27 SEPTEMBER BIRTHDAY, GHOCHUMAN! 🎂💍</h2>
+        <p>Quest Complete! Every level conquered, and a lifetime of Pringles &amp; kisses ahead!</p>
+      </div>
+
+      <!-- Secret Completion Banner (Shown when all 5/5 secrets are found) -->
+      <div id="all-secrets-banner" style="display: none; background: rgba(149, 222, 100, 0.18); border: 3px solid var(--pastel-mint); padding: 12px; text-align: center; margin-bottom: 16px;">
+        <span style="font-size: 12px; color: var(--pastel-mint);">
+          🏆 You found every secret ❤️ (5/5 Secret Memories Unlocked!)
+        </span>
+      </div>
+
+      <!-- Hero Proposal & Couple Showcase -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; align-items: center; background: var(--bg-card); border: 4px solid var(--pastel-gold); padding: 16px; box-shadow: 6px 6px 0 var(--outline-dark);">
+        <div style="text-align: center;">
+          <!-- Section A6: Proposal Celebration Cutscene -->
+          <img src="sprites/proposal_scene.jpg" alt="Proposal Scene" style="width: 100%; border: 3px solid var(--pastel-pink);" />
+        </div>
+        <div style="text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+          <!-- Section A3: Couple Sprite Together -->
+          <img src="sprites/couple_together.png" alt="Bhondhu and Ghochuman Sprites Together" class="sprite-img" style="height: 120px;" />
+          <div style="font-size: 13px; color: var(--pastel-gold); line-height: 1.5;">
+            GOT YOUUU 😆<br/>WE'RE GETTING MARRIED!
+          </div>
+          <p style="font-family: var(--font-retro); font-size: 22px; color: var(--pastel-cream); line-height: 1.3;">
+            Happy Birthday to my Miss Motichoor Ki Laddu, my Batman biker, my late-night Google Meet partner, and my forever Ghochuman! ❤️
+          </p>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 6px;">
+            <button class="pixel-btn small-btn gold-btn" onclick="Game.openMemoryShowreel(0, 'screen-celebration')">
+              🎬 Full-Screen Bouncy Slideshow
+            </button>
+            <button class="pixel-btn small-btn" onclick="Game.resetAndPlayAgain()">
+              Play Again 🔁
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL 22 PHOTOS BOUNCING LEFT<->RIGHT PARADE -->
+      <div style="margin-top: 26px;">
+        <h3 style="text-align: center; font-size: 13px; color: var(--pastel-gold); margin-bottom: 8px;">
+          📸 OUR 22 MEMORIES — BOUNCING LEFT ↔ RIGHT!
+        </h3>
+        <p style="text-align: center; font-family: var(--font-retro); font-size: 20px; color: var(--pastel-rose); margin-bottom: 14px;">
+          Tap any photo below to watch it bounce in the full-screen Memory Theater! 💖
+        </p>
+        <div id="final-bouncy-wall" class="bouncy-memory-wall"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       MODAL 1: SECRET ACHIEVEMENT UNLOCKED / GALLERY POPUP
+       ===================================================================== -->
+  <div id="secret-modal" class="modal-backdrop hidden" onclick="if(event.target===this) Game.closeSecretModal()">
+    <div class="modal-card">
+      <div id="secret-modal-content"></div>
+      <div style="margin-top: 14px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <button class="pixel-btn small-btn secondary" onclick="Game.openSecretsGallery()">
+          🏆 View All 5 Secrets
+        </button>
+        <button class="pixel-btn small-btn gold-btn" onclick="Game.closeSecretModal()">
+          AWESOME ❤️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       PLACEHOLDER <AUDIO> TAGS (B4 & B6 Requirement — Plus Web Audio Synth
+       built into game.js so every 8-bit sound works immediately out of the box!)
+       ===================================================================== -->
+  <audio id="sfx-jump" src="audio/jump.wav" preload="none"></audio>
+  <audio id="sfx-hit" src="audio/hit.wav" preload="none"></audio>
+  <audio id="sfx-ring" src="audio/ring_catch.wav" preload="none"></audio>
+  <audio id="sfx-achievement" src="audio/achievement.wav" preload="none"></audio>
+  <audio id="sfx-victory" src="audio/victory_fanfare.wav" preload="none"></audio>
+  <audio id="bgm-chiptune" src="audio/romantic_chiptune.mp3" loop preload="none"></audio>
+
+  <!-- Load Easy Photo & Story Config First, Then Main Game Engine -->
+  <script src="photos-config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
